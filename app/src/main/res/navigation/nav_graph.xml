@@ -12,10 +12,13 @@
         tools:layout="@layout/fragment_registar" >
         <action
             android:id="@+id/action_registarFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/registarFragment" />
         <action
             android:id="@+id/action_registarFragment_to_mainFragment"
-            app:destination="@id/mainFragment" />
+            app:destination="@id/mainFragment"
+            app:popUpTo="@id/registarFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/mainFragment"
@@ -33,7 +36,12 @@
         tools:layout="@layout/fragment_login" >
         <action
             android:id="@+id/action_loginFragment_to_mainFragment"
-            app:destination="@id/mainFragment" />
+            app:destination="@id/mainFragment"
+            app:popUpTo="@id/registarFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_loginFragment_to_registarFragment"
+            app:popUpToInclusive="false" />
     </fragment>
     <fragment
         android:id="@+id/noteFragment"
