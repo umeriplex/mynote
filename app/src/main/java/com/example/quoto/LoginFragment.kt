@@ -11,8 +11,9 @@ import androidx.navigation.fragment.findNavController
 import com.example.quoto.databinding.FragmentLoginBinding
 import com.example.quoto.databinding.FragmentRegistarBinding
 import com.example.quoto.models.UserRequest
-import com.example.quoto.utils.NetworkResult
+import com.example.quoto.utils.TokenManager
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
@@ -24,11 +25,18 @@ class LoginFragment : Fragment() {
 
     private val authViewModel by viewModels<AuthViewModel>()
 
+    @Inject
+    lateinit var tokenManager: TokenManager
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?, ): View? {
         // ----------applying binding Start--------------\\
         _binding = FragmentLoginBinding.inflate(inflater,container,  false)
         // ----------applying binding End--------------\\
+
+        if (tokenManager.getToken() !=null){
+            findNavController().navigate(R.id.action_registarFragment_to_mainFragment)
+        }
 
         return binding.root
     }
@@ -63,7 +71,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun bindObserver() {
-        authViewModel.userResponseLiveData.observe(viewLifecycleOwner) {
+        authViewModel.userLivedata.observe(viewLifecycleOwner) {
             binding.progressBar.isVisible = false
             when (it) {
                 is NetworkResult.Error -> {
@@ -73,8 +81,9 @@ class LoginFragment : Fragment() {
                     binding.progressBar.isVisible = true
                 }
                 is NetworkResult.Success -> {
+                    tokenManager.saveToken(it.data!!.token)
                     findNavController().navigate(R.id.action_loginFragment_to_mainFragment)
-                }//token remaining
+                }
             }
         }
     }

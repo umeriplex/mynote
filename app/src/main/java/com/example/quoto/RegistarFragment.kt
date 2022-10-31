@@ -11,8 +11,9 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.quoto.databinding.FragmentRegistarBinding
 import com.example.quoto.models.UserRequest
-import com.example.quoto.utils.NetworkResult
+import com.example.quoto.utils.TokenManager
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class RegistarFragment : Fragment() {
@@ -21,6 +22,9 @@ class RegistarFragment : Fragment() {
     private var _binding: FragmentRegistarBinding? = null
     private val binding get() = _binding!!
     // binding variable End
+
+    @Inject
+    lateinit var tokenManager: TokenManager
 
     private val authViewModel by viewModels<AuthViewModel>()
 
@@ -37,11 +41,10 @@ class RegistarFragment : Fragment() {
         binding.btnLogin.setOnClickListener {
             findNavController().navigate(R.id.action_registarFragment_to_loginFragment)
         }
-
         binding.btnSignUp.setOnClickListener {
             val validationRes = validateInput()
             if (validationRes.first){
-                authViewModel.resUser(getUserRequest())
+                authViewModel.registerUser(getUserRequest())
             }else{
                 binding.txtError.text = validationRes.second
             }
@@ -62,7 +65,7 @@ class RegistarFragment : Fragment() {
     }
 
     private fun bindObserver() {
-        authViewModel.userResponseLiveData.observe(viewLifecycleOwner) {
+        authViewModel.userLivedata.observe(viewLifecycleOwner) {
             binding.pBar.isVisible = false
             when (it) {
                 is NetworkResult.Error -> {
@@ -72,8 +75,9 @@ class RegistarFragment : Fragment() {
                     binding.pBar.isVisible = true
                 }
                 is NetworkResult.Success -> {
+                    tokenManager.saveToken(it.data!!.token)
                     findNavController().navigate(R.id.action_registarFragment_to_mainFragment)
-                }//token remaining
+                }
             }
         }
     }
