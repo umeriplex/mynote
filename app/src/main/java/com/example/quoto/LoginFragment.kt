@@ -34,10 +34,6 @@ class LoginFragment : Fragment() {
         _binding = FragmentLoginBinding.inflate(inflater,container,  false)
         // ----------applying binding End--------------\\
 
-        if (tokenManager.getToken() !=null){
-            findNavController().navigate(R.id.action_registarFragment_to_mainFragment)
-        }
-
         return binding.root
     }
 

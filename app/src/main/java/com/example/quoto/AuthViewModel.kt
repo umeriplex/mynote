@@ -9,9 +9,11 @@ import com.example.quoto.models.UserRequest
 import com.example.quoto.models.UserResponse
 import com.example.quoto.repo.UserRepository
 import com.example.quoto.utils.Helper
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class AuthViewModel @Inject constructor( private val userRepository: UserRepository) : ViewModel() {
 
     val userLivedata : LiveData<NetworkResult<UserResponse>>
